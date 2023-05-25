@@ -1,0 +1,49 @@
+body {
+  background:black;
+}
+
+span {
+  white-space: pre;
+}
+
+#jim {
+  font-family: "iosevka";
+  color:white;
+  flex-grow:1;
+}
+
+#cursor {
+  position:absolute;
+  color:black;
+  z-index:2;
+}
+
+#linenumbers, #jim {
+  padding: 5px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  overflow:auto;
+  white-space:pre-wrap;
+}
+
+#line-numbers {
+  width: 50px;
+}
+
+#command {
+  font-family: "iosevka";
+  color:white;
+  position:fixed;
+  bottom:0;
+  left:0;
+}
+
+@font-face {
+  font-family: "Venacti";
+  src: url('./fonts/Venacti.ttf');
+}
+
+@font-face {
+  font-family: "iosevka";
+  src: url('./fonts/iosevka.ttf');
+}
