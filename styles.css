@@ -7,6 +7,8 @@ span {
 }
 
 #jim {
+  left:16px;
+  position:relative;
   font-family: "iosevka";
   color:white;
   flex-grow:1;
@@ -18,16 +20,16 @@ span {
   z-index:2;
 }
 
-#linenumbers, #jim {
-  padding: 5px;
-  border: 1px solid black;
-  box-sizing: border-box;
-  overflow:auto;
-  white-space:pre-wrap;
-}
 
-#line-numbers {
-  width: 50px;
+#linenumbers {
+  position:fixed;
+  left:0;
+  top:1;
+  width:5%;
+  height:100vh;
+  overflow:auto;
+  color:white;
+  font-family: "iosevka";
 }
 
 #command {
