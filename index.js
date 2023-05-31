@@ -1,6 +1,7 @@
 const jim = document.getElementById("jim");
 const input = document.getElementById("textInput");
 const cursor = document.getElementById("cursor");
+const textMap = new Map();
 const normalMode = "NORMAL";
 const insertMode = "INSERT";
 const visualMode = "VISUAL";
@@ -16,6 +17,7 @@ let layerState = false;
 let replaceState = false;
 let findState = false;
 let commandBuffer = "";
+let findStateback = false;
 const lineno = document.getElementById("linenumbers");
 lineno.innerText = "1.\n";
 lineCount++;
@@ -59,6 +61,9 @@ document.addEventListener("keydown", (event) => {
       } else if (findState) {
         findRealCharacter(event.key);
         findState = false;
+      } else if (findStateback) {
+        findRealCharacterBackwards(event.key);
+        findStateback = false;
       }
       layerState = false;
     } else if (event.key === "i") {
@@ -99,6 +104,9 @@ document.addEventListener("keydown", (event) => {
     } else if (event.key === "f") {
       layerState = true;
       findState = true;
+    } else if (event.key === "F") {
+      layerState = true;
+      findStateback = true;
     }
   } else if (wordState === visualMode) {
   } else if (wordState === commandMode) {
@@ -155,10 +163,20 @@ function findRealCharacter(theKey) {
     ) {
       return;
     }
-    console.log(
-      theKey + "does not equal " +
-        document.getElementById("jim").children[charCount],
-    );
+  }
+}
+
+function findRealCharacterBackwards(theKey) {
+  let firstIteration = true;
+  for (let i = charCount; i > 0; i--) {
+    if (
+      document.getElementById("jim").children[charCount--].innerText ===
+        theKey && firstIteration === false
+    ) {
+      charCount += 2;
+      return;
+    }
+    firstIteration = false;
   }
 }
 
@@ -220,9 +238,15 @@ function evaluateCommand() {
       parent.removeChild(spans[0]);
     }
     charCount = 0;
-    console.log("hi");
   } else if (commandBuffer === "terminal") {
     window.open("https://ld211.github.io");
+  } else if (commandBuffer === "q!") {
+    console.log("i cant do anythign with this");
+  } else if (commandBuffer.split(" ")[0] === "w") {
+    let arg = commandBuffer.split(" ");
+    if (arg.length > 1) {
+      textMap.set(arg[1], document.getElementById("jim").innerText);
+    }
   }
 }
 
@@ -262,7 +286,24 @@ function goForward(n) {
 }
 
 function goBackward(n) {
-  if (isNan(n)) n = 1;
+  if (isNaN(n)) n = 1;
+  for (let i = 0; i < n; i++) {
+    while (charCount-- > 0) {
+      if (
+        document.getElementById("jim").children[charCount - 1].innerText === " "
+      ) {
+        charCount--;
+        while (
+          document.getElementById("jim").children[charCount - 1].innerText !==
+            " "
+        ) {
+          charCount--;
+        }
+        charCount++;
+        break;
+      }
+    }
+  }
 }
 
 function replaceLetter(character) {
