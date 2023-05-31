@@ -14,6 +14,7 @@ let cursorType = "insert";
 let amountString = "";
 let layerState = false;
 let replaceState = false;
+let findState = false;
 let commandBuffer = "";
 const lineno = document.getElementById("linenumbers");
 lineno.innerText = "1.\n";
@@ -26,6 +27,17 @@ document.addEventListener("keydown", (event) => {
     if (event.key.length === 1) {
       appendSpan(event.key);
       charCount++;
+      if (event.key === "(") {
+        appendSpan(")");
+      } else if (event.key === '"') {
+        appendSpan('"');
+      } else if (event.key === "[") {
+        appendSpan("]");
+      } else if (event.key === "'") {
+        appendSpan("'");
+      } else if (event.key === "{") {
+        appendSpan("}");
+      }
     } else if (event.key === "Backspace") {
       if (charCount !== 0) {
         document.getElementById("jim").removeChild(
@@ -44,6 +56,9 @@ document.addEventListener("keydown", (event) => {
       if (replaceState) {
         replaceLetter(event.key);
         replaceState = false;
+      } else if (findState) {
+        findRealCharacter(event.key);
+        findState = false;
       }
       layerState = false;
     } else if (event.key === "i") {
@@ -71,9 +86,9 @@ document.addEventListener("keydown", (event) => {
     } else if (event.key === "b") {
       goBackward(parseInt(amountString));
     } else if (event.key === "$") {
-      findKey("<br>");
+      findKey("BR");
     } else if (event.key === "0" && amountString.length === 0) {
-      charCount = 1;
+      findKeyBackWards("BR");
     } else if (event.key === "r") {
       replaceState = true;
       layerState = true;
@@ -81,6 +96,9 @@ document.addEventListener("keydown", (event) => {
       removeLetter();
     } else if (isDigit(event.key)) {
       amountString += event.key;
+    } else if (event.key === "f") {
+      layerState = true;
+      findState = true;
     }
   } else if (wordState === visualMode) {
   } else if (wordState === commandMode) {
@@ -114,6 +132,40 @@ function updateCursor() {
   cursor.style.top = targetpos.top + "px";
   cursor.style.width = targetpos.width + "px";
   cursor.style.height = targetpos.height + "px";
+}
+
+function findKey(theKey) {
+  for (
+    let i = charCount;
+    i < document.getElementById("jim").children.length;
+    i++
+  ) {
+    if (
+      document.getElementById("jim").children[charCount++].tagName === theKey
+    ) {
+      return;
+    }
+  }
+}
+
+function findRealCharacter(theKey) {
+  for (let i = 0; i < document.getElementById("jim").children.length; i++) {
+    if (document.getElementById("jim").children[charCount++] === theKey) {
+      return;
+    }
+  }
+}
+
+function findKeyBackWards(theKey) {
+  for (let i = 0; i < document.getElementById("jim").children.length; i++) {
+    if (
+      document.getElementById("jim").children[charCount - 1].tagName === theKey
+    ) {
+      charCount++;
+      return;
+    }
+    charCount--;
+  }
 }
 
 function isDigit(input) {
@@ -192,7 +244,7 @@ function moveLeft(n) {
 function goForward(n) {
   if (isNaN(n)) n = 1;
   for (let i = 0; i < n; i++) {
-    while (true) {
+    while (charCount++ < document.getElementById("jim").children.length) {
       if (document.getElementById("jim").children[charCount--] === " ") {
         break;
       }
