@@ -34,7 +34,7 @@ document.addEventListener("keydown", (event) => {
       } else if (event.key === "[") {
         appendSpan("]");
       } else if (event.key === "'") {
-        appendSpan("'");
+        //appendSpan("'");
       } else if (event.key === "{") {
         appendSpan("}");
       }
@@ -149,15 +149,21 @@ function findKey(theKey) {
 }
 
 function findRealCharacter(theKey) {
-  for (let i = 0; i < document.getElementById("jim").children.length; i++) {
-    if (document.getElementById("jim").children[charCount++] === theKey) {
+  for (let i = 0; i < document.getElementById("jim").children.length - 1; i++) {
+    if (
+      document.getElementById("jim").children[charCount++].innerText === theKey
+    ) {
       return;
     }
+    console.log(
+      theKey + "does not equal " +
+        document.getElementById("jim").children[charCount],
+    );
   }
 }
 
 function findKeyBackWards(theKey) {
-  for (let i = 0; i < document.getElementById("jim").children.length; i++) {
+  for (let i = charCount; i > 0; i--) {
     if (
       document.getElementById("jim").children[charCount - 1].tagName === theKey
     ) {
@@ -245,7 +251,10 @@ function goForward(n) {
   if (isNaN(n)) n = 1;
   for (let i = 0; i < n; i++) {
     while (charCount++ < document.getElementById("jim").children.length) {
-      if (document.getElementById("jim").children[charCount--] === " ") {
+      if (
+        document.getElementById("jim").children[charCount - 1].innerText === " "
+      ) {
+        charCount++;
         break;
       }
     }
